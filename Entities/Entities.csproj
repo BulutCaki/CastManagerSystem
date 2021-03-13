@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\KampFinalProject\Core\Core.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
