@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -20,6 +22,8 @@ namespace Business.Concrete
             _actorDal = actorDal;
         }
         [ValidationAspect(typeof(ActorValidator))]
+        [CacheRemoveAspect("IActorService.Get")]
+        [SecuredOperation("admin")]
         public IResult Add(Actor actor)
         {
             _actorDal.Add(actor);
@@ -31,7 +35,7 @@ namespace Business.Concrete
             _actorDal.Delete(actor);
             return new SuccessResult(Messages.OperationSuccessful);
         }
-
+        [CacheAspect]
         public IDataResult<List<Actor>> GetAll()
         {
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(), "Başarılı");
@@ -46,7 +50,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(h => h.EyeColor == HairCollor), Messages.OperationSuccessful);
         }
-
+        [CacheAspect]
         public IDataResult<List<Actor>> GetAllByJob(bool Job)
         {
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(j => j.Job == Job), Messages.OperationSuccessful);
@@ -55,7 +59,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(s => s.Sexuality == Sexuality), Messages.OperationSuccessful);
         }
-
+        [CacheRemoveAspect("IActorService.Get")]
         public IResult Update(Actor actor)
         {
             _actorDal.Update(actor);

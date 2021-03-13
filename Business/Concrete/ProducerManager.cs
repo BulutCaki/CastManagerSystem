@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -20,6 +22,8 @@ namespace Business.Concrete
             _producerDal = producerDal;
         }
         [ValidationAspect(typeof(ProducerValidator))]
+        [CacheRemoveAspect("IProducerService.Get")]
+        [SecuredOperation("admin")]
         public IResult Add(Producer producer)
         {
             if (producer.ProducerName.Length<2 && producer.ProducerOwner.Length<2)
@@ -39,7 +43,7 @@ namespace Business.Concrete
             _producerDal.Delete(producer);
             return new SuccessResult(Messages.OperationSuccessful);
         }
-
+        [CacheAspect]
         public IDataResult<List<Producer>> GetAll()
         {
             if (DateTime.Now.Hour == 22)
@@ -53,7 +57,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Producer>>(_producerDal.GetAll(c=>c.City==City), Messages.OperationSuccessful);
         }
-
+        [CacheRemoveAspect("IPlatformService.Get")]
         public IResult Update(Producer producer)
         {
             _producerDal.Update(producer);
