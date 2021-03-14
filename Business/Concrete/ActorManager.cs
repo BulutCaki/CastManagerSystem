@@ -3,13 +3,17 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Business.Concrete
 {
@@ -35,9 +39,12 @@ namespace Business.Concrete
             _actorDal.Delete(actor);
             return new SuccessResult(Messages.OperationSuccessful);
         }
+        [LogAspect(typeof(FileLogger))]
         [CacheAspect]
+        [PerformanceAspect(5)]
         public IDataResult<List<Actor>> GetAll()
         {
+            
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(), "Başarılı");
         }
 

@@ -3,7 +3,10 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -44,6 +47,8 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationSuccessful);
         }
         [CacheAspect]
+        [LogAspect(typeof(FileLogger))]
+        [PerformanceAspect(5)]
         public IDataResult<List<Producer>> GetAll()
         {
             if (DateTime.Now.Hour == 22)
