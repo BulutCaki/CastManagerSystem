@@ -47,7 +47,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationSuccessful);
         }
         [CacheAspect]
-        [LogAspect(typeof(FileLogger))]
+        [LogAspect(typeof(DatabaseLogger))]
         [PerformanceAspect(5)]
         public IDataResult<List<Producer>> GetAll()
         {

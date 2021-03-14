@@ -41,7 +41,7 @@ namespace Business.Concrete
         }
         [LogAspect(typeof(FileLogger))]
         [CacheAspect]
-        [PerformanceAspect(5)]
+        //[PerformanceAspect(5)]
         public IDataResult<List<Actor>> GetAll()
         {
             
