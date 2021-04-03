@@ -28,6 +28,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ActorValidator))]
         [CacheRemoveAspect("IActorService.Get")]
         [SecuredOperation("admin")]
+        [LogAspect(typeof(FileLogger))]
         public IResult Add(Actor actor)
         {
             _actorDal.Add(actor);
@@ -42,6 +43,7 @@ namespace Business.Concrete
         [LogAspect(typeof(FileLogger))]
         [CacheAspect]
         //[PerformanceAspect(5)]
+        [SecuredOperation("admin")]
         public IDataResult<List<Actor>> GetAll()
         {
             
