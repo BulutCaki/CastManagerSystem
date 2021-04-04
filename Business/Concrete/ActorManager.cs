@@ -3,6 +3,7 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Exception;
 using Core.Aspects.Autofac.Logging;
 using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
@@ -29,12 +30,13 @@ namespace Business.Concrete
         [CacheRemoveAspect("IActorService.Get")]
         [SecuredOperation("admin")]
         [LogAspect(typeof(FileLogger))]
+        [ExceptionLogAspect(typeof(FileLogger))]
         public IResult Add(Actor actor)
         {
             _actorDal.Add(actor);
             return new SuccessResult(Messages.OperationSuccessful);
         }
-
+        [CacheRemoveAspect("IActorService.Get")]
         public IResult Delete(Actor actor)
         {
             _actorDal.Delete(actor);
@@ -42,7 +44,8 @@ namespace Business.Concrete
         }
         [LogAspect(typeof(FileLogger))]
         [CacheAspect]
-        //[PerformanceAspect(5)]
+        [PerformanceAspect(5)]
+        [ExceptionLogAspect(typeof(FileLogger))]
         [SecuredOperation("admin")]
         public IDataResult<List<Actor>> GetAll()
         {
@@ -60,6 +63,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(h => h.EyeColor == HairCollor), Messages.OperationSuccessful);
         }
         [CacheAspect]
+        [ExceptionLogAspect(typeof(FileLogger))]
+        [PerformanceAspect(5)]
+        [SecuredOperation("admin")]
+        [LogAspect(typeof(FileLogger))]
         public IDataResult<List<Actor>> GetAllByJob(bool Job)
         {
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(j => j.Job == Job), Messages.OperationSuccessful);
@@ -69,6 +76,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Actor>>(_actorDal.GetAll(s => s.Sexuality == Sexuality), Messages.OperationSuccessful);
         }
         [CacheRemoveAspect("IActorService.Get")]
+        [ExceptionLogAspect(typeof(FileLogger))]
+        [PerformanceAspect(5)]
+        [SecuredOperation("admin")]
+        [LogAspect(typeof(FileLogger))]
         public IResult Update(Actor actor)
         {
             _actorDal.Update(actor);

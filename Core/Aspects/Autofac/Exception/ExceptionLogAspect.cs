@@ -2,17 +2,21 @@
 using Core.CrossCuttingConcerns.Logging;
 using Core.CrossCuttingConcerns.Logging.Log4Net;
 using Core.Utilities.Interceptors;
+using Core.Utilities.IoC;
 using Core.Utilities.Messages;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace Core.Aspects.Autofac.Exception
 {
     public class ExceptionLogAspect : MethodInterception
     {
         private LoggerServiceBase _loggerServiceBase;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public ExceptionLogAspect(Type loggerService)
         {
             if (loggerService.BaseType != typeof(LoggerServiceBase))
@@ -21,6 +25,8 @@ namespace Core.Aspects.Autofac.Exception
             }
 
             _loggerServiceBase = (LoggerServiceBase)Activator.CreateInstance(loggerService);
+            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+
         }
         protected override void OnException(IInvocation invocation, System.Exception e)
         {
@@ -45,6 +51,7 @@ namespace Core.Aspects.Autofac.Exception
 
             var logDetailWithException = new LogDetailWithException
             {
+                User = (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.User.Identity.Name == null) ? "Tanımsız" : _httpContextAccessor.HttpContext.User.Identity.Name,
                 MethodName = invocation.Method.Name,
                 LogParameters = logParameters
             };

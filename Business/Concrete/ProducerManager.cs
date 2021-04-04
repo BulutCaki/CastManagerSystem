@@ -49,6 +49,7 @@ namespace Business.Concrete
         [CacheAspect]
         [LogAspect(typeof(DatabaseLogger))]
         [PerformanceAspect(5)]
+        [SecuredOperation("admin")]
         public IDataResult<List<Producer>> GetAll()
         {
             if (DateTime.Now.Hour == 22)
