@@ -10,7 +10,8 @@ using System.Text;
 using System.Linq;
 using Core.Utilities.IoC;
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Net;
+using System.Net.Sockets;
 
 namespace Core.Aspects.Autofac.Logging
 {
@@ -35,6 +36,18 @@ namespace Core.Aspects.Autofac.Logging
         {
             _loggerServiceBase.Info(GetLogDetail(invocation));
         }
+        string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new System.Exception("No network adapters with an IPv4 address in the system!");
+        }
 
         private LogDetail GetLogDetail(IInvocation invocation)
         {
@@ -51,7 +64,8 @@ namespace Core.Aspects.Autofac.Logging
 
             var logDetail = new LogDetail
             {
-                User = (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.User.Identity.Name == null) ? "Tanımsız" : _httpContextAccessor.HttpContext.User.Identity.Name,
+                Date = DateTime.Now,
+                User = (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.User.Identity.Name == null) ? GetLocalIPAddress() : _httpContextAccessor.HttpContext.User.Identity.Name,
                 MethodName = invocation.Method.Name,
                 LogParameters = logParameters
             };

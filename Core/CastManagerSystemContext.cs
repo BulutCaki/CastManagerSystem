@@ -14,7 +14,7 @@ namespace Core
         // Aşağıdaki metot proje ile hangi veritabanını ilişkilendireceğimizi söylediğimiz yerdir.
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=CastManagagerSystemDb;Trusted_Connection=true");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=GroceryShopping;Trusted_Connection=true");
         }
 
 
